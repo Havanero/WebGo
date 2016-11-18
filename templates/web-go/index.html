@@ -1,0 +1,56 @@
+{{template "base.html" "index"}}
+<html>
+  <head>
+    <meta charset="utf-8">
+   {{define "title"}} my new title {{end}}
+  </head>
+  <body>
+    <div id="page-switcher">
+      <button name="subject" type="submit" onclick="showViewPage()" value="View Library">View Library</button>
+      <button name="subject" type="submit" onclick="showSearchPage()" value="Add Books">Add Books</button>
+    </div>
+    <div id="view-page">
+      <table width="100%">
+        <thead>
+          <tr style="text-align:left;">
+            <th width="45%"> Title</th>
+            <th width="45%"> Author</th>
+            <th width="45%"> Classification</th>
+          </tr>
+        </thead>
+        <tbody id="view-results">
+          {{range .Books}}
+          <tr>
+            <td>
+              {{.Title}}
+            </td>
+            <td>
+                {{.Author}}
+              </td>
+              <td>
+               {{.Classification}}
+            </td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+    <div id="search-page" style="display: none;">
+    <form id="search-form" onsubmit="return false">
+      <input name="search"/>
+      <input type="submit" value="Search" onclick="submitSearch()"/>
+    </form>
+    <table width=100%>
+      <thead>
+        <tr style="text-align: left;">
+          <th width="40%">Title</th>
+          <th width="30%"> Author </th>
+          <th>Year </th>
+          <th>ID </th>
+        </tr>
+      </thead>
+      <tbody id="search-results"> </tbody>
+    </table>
+</div>
+</body>
+</html>
