@@ -16,19 +16,17 @@
             <th width="45%"> Title</th>
             <th width="45%"> Author</th>
             <th width="45%"> Classification</th>
+            <th width="15%"></th>
           </tr>
         </thead>
         <tbody id="view-results">
           {{range .Books}}
           <tr>
+            <td>{{.Title}}</td>
+            <td>{{.Author}}</td>
+            <td>{{.Classification}}</td>
             <td>
-              {{.Title}}
-            </td>
-            <td>
-                {{.Author}}
-              </td>
-              <td>
-               {{.Classification}}
+              <button class="delete-btn" type="button" name="button" onclick="deleteBook({{.PK}})">Delete</button>
             </td>
           </tr>
           {{end}}
