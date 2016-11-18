@@ -5,8 +5,8 @@
 function deleteBook(pk){
   console.log("Deteling ", pk);
   $.ajax({
-    method:"GET",
-    url: "/books/delete?pk="+pk,
+    method:"DELETE",
+    url: "/books/"+pk,
     success: function(){
       $("#book-row-"+ pk).remove();
     }
@@ -36,8 +36,8 @@ function submitSearch(){
         SearchResults.append(row);
         row.on("click", function(){
           $.ajax({
-            url:"books/add?id="+result.ID,
-            method: "GET",
+            url:"/books?id="+result.ID,
+            method: "PUT",
             success: function(data){
               var book = JSON.parse(data)
               if (!book)return;
