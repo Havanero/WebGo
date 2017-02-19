@@ -36,4 +36,18 @@ pipeline {
             }
         }
 
+      post{
+
+        always{
+            echo "will always post"
+        }
+        success {
+          echo "success finished"
+        }
+
+        failure {
+         echo "failed to post"
+        }
+      }
+
 }
