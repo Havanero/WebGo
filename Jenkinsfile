@@ -6,7 +6,7 @@ pipeline {
     triggers{
       cron('@hourly')
     }
-    properties {
+    options {
         buildDiscarder(logRotator(numToKeepStr:'1'))
         disableConcurrentBuilds()
     }
