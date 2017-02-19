@@ -1,4 +1,13 @@
 #!/usr/bin/env groovy
+
+/**
+        * Jenkinsfile for OBIS Service Pipeline
+        * Please make pipeline configuration changes here instead of Jenkins GUI page
+        * This script takes precedence.
+        * see: https://jenkins.io/doc/book/pipeline/jenkinsfile/#advanced-scripted-pipeline
+ */
+import groovy.json.JsonOutput
+
 pipeline {
 
     agent any
@@ -59,4 +68,13 @@ pipeline {
           }
       }
 
+}
+
+def notifySlack(text, channel) {
+    def slackURL = 'https://hooks.slack.com/services/xxxxxxx/yyyyyyyy/zzzzzzzzzz'
+    def payload = JsonOutput.toJson([text      : text,
+                                     channel   : channel,
+                                     username  : "jenkins",
+                                     icon_emoji: ":jenkins:"])
+    sh "curl -X POST --data-urlencode \'payload=${payload}\' ${slackURL}"
 }
