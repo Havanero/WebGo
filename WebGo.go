@@ -1,169 +1,34 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
-	"encoding/xml"
-	"html/template"
-	"io/ioutil"
+	"flag"
 	"net/http"
-	"net/url"
-	"strconv"
-
-	gorp "gopkg.in/gorp.v1"
 
 	"github.com/codegangsta/negroni"
 	gmux "github.com/gorilla/mux"
-
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type Book struct {
-	PK             int64  `db:"pk"`
-	Title          string `db:"title"`
-	Author         string `db:"author"`
-	Classification string `db:"classification"`
-	ID             string `db:"id"`
-}
-type Page struct {
-	Books []Book
-}
-type SearchResult struct {
-	Title  string `xml:"title,attr"`
-	Author string `xml:"author,attr"`
-	Year   string `xml:"hyr,attr"`
-	ID     string `xml:"owi,attr"`
-}
-
-var db *sql.DB
-var dbmap *gorp.DbMap
-
-func initDB() {
-	db, _ = sql.Open("sqlite3", "dev.db")
-	dbmap = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
-	dbmap.AddTableWithName(Book{}, "books").SetKeys(true, "pk")
-	dbmap.CreateTablesIfNotExists()
-}
-
-func verifyDataBase(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	if err := db.Ping(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	next(w, r)
-}
-
 func main() {
 	initDB()
-	templates := template.Must(template.ParseFiles("templates/base.html", "templates/web-go/index.html"))
+	var dir string
+	flag.StringVar(&dir, "dir", "assets", "the directory to serve files from. Defaults to the current dir")
+	flag.Parse()
 	mux := gmux.NewRouter()
+	mux.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir(dir))))
 
-	mux.PathPrefix("/assets/").Handler(
-		http.StripPrefix("/assets/", http.FileServer(
-			http.Dir("/home/cubanguy/GOProjects/src/github.com/havanero/WebGo/assets/")))).Methods("GET")
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		p := Page{Books: []Book{}}
-		if _, err := dbmap.Select(&p.Books, "select * from books"); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		if err := templates.ExecuteTemplate(w, "index.html", p); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	}).Methods("GET")
-
-	mux.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
-		var results []SearchResult
-		var err error
-		if results, err = search(r.FormValue("search")); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-		encoder := json.NewEncoder(w)
-		if err := encoder.Encode(results); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	}).Methods("POST")
-
-	mux.HandleFunc("/books", func(w http.ResponseWriter, r *http.Request) {
-		var book ClassifyBookResponse
-		var err error
-
-		if book, err = find(r.FormValue("id")); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-
-		b := Book{
-			PK:             -1,
-			Title:          book.BookData.Title,
-			Author:         book.BookData.Author,
-			Classification: book.Classification.MostPopular,
-		}
-		if err = dbmap.Insert(&b); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if err := json.NewEncoder(w).Encode(b); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	}).Methods("PUT")
-
-	mux.HandleFunc("/books/{pk}", func(w http.ResponseWriter, r *http.Request) {
-		pk, _ := strconv.ParseInt(gmux.Vars(r)["pk"], 10, 64)
-		if _, err := dbmap.Delete(&Book{pk, "", "", "", ""}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	}).Methods("DELETE")
+	mux.HandleFunc("/", rootPage).Methods("GET")
+	mux.HandleFunc("/books", getBooks).Methods("GET")
+	mux.HandleFunc("/search", postSearch).Methods("POST")
+	mux.HandleFunc("/books", addBooks).Methods("PUT")
+	mux.HandleFunc("/books/{pk}", deleteBooks).Methods("DELETE")
 
 	n := negroni.Classic()
+
+	//store := cookiestore.New([]byte("secret123"))
+	//n.Use(sessions.Sessions("my_session", store))
+
 	n.Use(negroni.HandlerFunc(verifyDataBase))
 	n.UseHandler(mux)
 	n.Run(":8081")
-}
-
-type ClassifySearchResponse struct {
-	Results []SearchResult `xml:"works>work"`
-}
-
-type ClassifyBookResponse struct {
-	BookData struct {
-		Title  string `xml:"title,attr"`
-		Author string `xml:"author,attr"`
-		ID     string `xml:"owi,attr"`
-	} `xml:"work"`
-	Classification struct {
-		MostPopular string `xml:"sfa,attr"`
-	} `xml:"recommendation>ddc>mostPopular"`
-}
-
-func find(id string) (ClassifyBookResponse, error) {
-	var c ClassifyBookResponse
-	body, err := classifyAPI("http://classify.oclc.org/classify2/Classify?&summary=true&owi=" + url.QueryEscape(id))
-
-	if err != nil {
-		return ClassifyBookResponse{}, err
-	}
-	err = xml.Unmarshal(body, &c)
-	return c, err
-}
-func search(query string) ([]SearchResult, error) {
-	body, err := classifyAPI("http://classify.oclc.org/classify2/Classify?&summary=true&title=" + url.QueryEscape(query))
-	if err != nil {
-		return []SearchResult{}, err
-	}
-	var c ClassifySearchResponse
-	err = xml.Unmarshal(body, &c)
-	return c.Results, err
-}
-func classifyAPI(url string) ([]byte, error) {
-	var res *http.Response
-	var err error
-	if res, err = http.Get(url); err != nil {
-		return []byte{}, err
-	}
-	defer res.Body.Close()
-	return ioutil.ReadAll(res.Body)
 }

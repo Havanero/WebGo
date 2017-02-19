@@ -1,4 +1,4 @@
-#search-results tr:hover, #view-results tr:hover {
+#search-results tr:hover, #view-results tr:hover, #view-page th:hover {
     background-color: lightgrey;
     cursor: pointer;
   }
