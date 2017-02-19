@@ -13,21 +13,21 @@ pipeline {
                 }
              }
 
-            stage('Build') {
+            stage('APP BUILD') {
                 steps {
                     echo 'Building..'
                     build 'TestJob'
                     sleep 20
                 }
             }
-            stage('Test') {
+            stage('QA API') {
                 steps {
                     echo 'Testing..'
                     build 'TestJob1'
                     sleep 10
                 }
             }
-            stage('Deploy') {
+            stage('S3 Deploy') {
                 steps {
                     echo 'Deploying....'
                      build 'TestJob2'
@@ -38,16 +38,13 @@ pipeline {
 
       post{
 
-        always{
-            echo "will always post"
-        }
-        success {
-          echo "success finished"
-        }
+          success {
+            echo "success finished"
+          }
 
-        failure {
-         echo "failed to post"
-        }
+          failure {
+           echo "failed to post"
+          }
       }
 
 }
