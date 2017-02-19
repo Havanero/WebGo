@@ -35,7 +35,7 @@ pipeline {
                   sleep 20
               }
           }
-        stage('HMI API QA') {
+        stage(''\u2776 HMI API QA') {
               steps {
                   echo 'Testing..'
                   build 'TestJob1'
@@ -43,7 +43,7 @@ pipeline {
               }
           }
 
-        stage('HMI UI QA') {
+        stage(''\u2776 HMI UI QA') {
               steps {
                   echo 'Testing..'
                   build 'TestJob1'
@@ -51,7 +51,7 @@ pipeline {
               }
           }
 
-        stage('S3 Deploy') {
+        stage(''\u2776 S3 Deploy') {
               steps {
                   echo 'Deploying....'
                    build 'TestJob2'
