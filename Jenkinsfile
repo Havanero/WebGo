@@ -1,62 +1,65 @@
 #!/usr/bin/env groovy
 pipeline {
 
-    agent any
+  node {
 
-    triggers{
-      cron('@hourly')
-    }
-    options {
-        buildDiscarder(logRotator(numToKeepStr:'1'))
-        disableConcurrentBuilds()
-    }
 
-        stages {
+          agent any
 
-            stage ('Checkout'){
-                steps {
-                        echo 'checking out'
-                        sleep 10
+          triggers{
+            cron('@hourly')
+          }
+          options {
+              buildDiscarder(logRotator(numToKeepStr:'1'))
+              disableConcurrentBuilds()
+          }
 
+              stages {
+
+                  stage ('Checkout'){
+                      steps {
+                              echo 'checking out'
+                              sleep 10
+
+                      }
+                   }
+
+                  stage('APP BUILD') {
+                      steps {
+                          echo 'Building..'
+                          build 'TestJob'
+                          sleep 20
+                      }
+                  }
+                  stage('QA API') {
+                      steps {
+                          echo 'Testing..'
+                          build 'TestJob1'
+                          sleep 10
+                      }
+                  }
+                  stage('S3 Deploy') {
+                      steps {
+                          echo 'Deploying....'
+                           build 'TestJob2'
+                          sleep 20
+                      }
+                  }
+              }
+
+            post{
+
+                success {
+                  echo "success finished"
                 }
-             }
 
-            stage('APP BUILD') {
-                steps {
-                    echo 'Building..'
-                    build 'TestJob'
-                    sleep 20
+                failure {
+                 echo "failed to post"
                 }
-            }
-            stage('QA API') {
-                steps {
-                    echo 'Testing..'
-                    build 'TestJob1'
-                    sleep 10
-                }
-            }
-            stage('S3 Deploy') {
-                steps {
-                    echo 'Deploying....'
-                     build 'TestJob2'
-                    sleep 20
+
+                unstable {
+                  echo "unstable build"
                 }
             }
         }
-
-      post{
-
-          success {
-            echo "success finished"
-          }
-
-          failure {
-           echo "failed to post"
-          }
-
-          unstable {
-            echo "unstable build"
-          }
-      }
-
 }
