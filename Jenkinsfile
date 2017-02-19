@@ -20,60 +20,60 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-        stages {
+  stages {
 
-            stage ('Checkout'){
-                steps {
-                        echo 'checking out'
-                        sleep 10
-                }
-             }
-            stage('APP BUILD') {
-                steps {
-                    echo 'Building..'
-                    build 'TestJob'
-                    sleep 20
-                }
-            }
-            stage('HMI API QA') {
-                steps {
-                    echo 'Testing..'
-                    build 'TestJob1'
-                    sleep 10
-                }
-            }
-
-            stage('HMI UI QA') {
-                steps {
-                    echo 'Testing..'
-                    build 'TestJob1'
-                    sleep 10
-                }
-            }
-
-            stage('S3 Deploy') {
-                steps {
-                    echo 'Deploying....'
-                     build 'TestJob2'
-                    sleep 20
-                }
-            }
-        }
-
-      post{
-
-          success {
-            echo "success finished"
+        stage ('Checkout'){
+              steps {
+                      echo 'checking out'
+                      sleep 10
+              }
+           }
+        stage('\u2776 APP BUILD') {
+              steps {
+                  echo 'Building..'
+                  build 'TestJob'
+                  sleep 20
+              }
+          }
+        stage('HMI API QA') {
+              steps {
+                  echo 'Testing..'
+                  build 'TestJob1'
+                  sleep 10
+              }
           }
 
-          failure {
-           echo "failed to post"
+        stage('HMI UI QA') {
+              steps {
+                  echo 'Testing..'
+                  build 'TestJob1'
+                  sleep 10
+              }
           }
 
-          unstable {
-            echo "unstable build"
+        stage('S3 Deploy') {
+              steps {
+                  echo 'Deploying....'
+                   build 'TestJob2'
+                  sleep 20
+              }
           }
       }
+
+  post{
+
+        success {
+          echo "success finished"
+        }
+
+        failure {
+         echo "failed to post"
+        }
+
+        unstable {
+          echo "unstable build"
+        }
+    }
 
 }
 
