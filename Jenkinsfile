@@ -3,6 +3,14 @@ pipeline {
 
     agent any
 
+    triggers{
+      cron('@hourly')
+    }
+    properties {
+        buildDiscarder(logRotator(numToKeepStr:'1'))
+        disableConcurrentBuilds()
+    }
+
         stages {
 
             stage ('Checkout'){
@@ -44,6 +52,10 @@ pipeline {
 
           failure {
            echo "failed to post"
+          }
+
+          unstable {
+            echo "unstable build"
           }
       }
 
