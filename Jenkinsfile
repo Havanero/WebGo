@@ -26,10 +26,8 @@ pipeline {
                 steps {
                         echo 'checking out'
                         sleep 10
-
                 }
              }
-
             stage('APP BUILD') {
                 steps {
                     echo 'Building..'
@@ -37,13 +35,22 @@ pipeline {
                     sleep 20
                 }
             }
-            stage('QA API') {
+            stage('HMI API QA') {
                 steps {
                     echo 'Testing..'
                     build 'TestJob1'
                     sleep 10
                 }
             }
+
+            stage('HMI UI QA') {
+                steps {
+                    echo 'Testing..'
+                    build 'TestJob1'
+                    sleep 10
+                }
+            }
+
             stage('S3 Deploy') {
                 steps {
                     echo 'Deploying....'
