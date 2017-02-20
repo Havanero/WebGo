@@ -56,27 +56,7 @@ try{
               sh "ls -lrt"
               echo "testing "
             }
-
-          currentBuild{
-
-
-          }
-            post{
-
-                    success {
-                          echo "success finished"
-                        }
-
-                      failure {
-                         echo "failed to post"
-                        }
-
-                        unstable {
-                          echo "unstable build"
-                        }
-                  }
-
-    }
+        }
   }
 catch (err){
    echo "failed to run node linux"
