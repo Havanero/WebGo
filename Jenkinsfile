@@ -47,6 +47,30 @@ try{
           }
 
 
+        stage ('\u2778 OBIS-Service API TEST'){
+            sh "ls -lrt"
+            echo "testing "
+          }
+
+          stage ('\u2779 OBIS-Service S3 Deploy'){
+              sh "ls -lrt"
+              echo "testing "
+            }
+            post{
+
+                    success {
+                          echo "success finished"
+                        }
+
+                      failure {
+                         echo "failed to post"
+                        }
+
+                        unstable {
+                          echo "unstable build"
+                        }
+                  }
+
     }
   }
 catch (err){
