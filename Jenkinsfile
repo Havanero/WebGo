@@ -16,7 +16,9 @@ import java.net.URL
 
 pipeline {
 
-        agent none
+        agent {
+          label any
+        }
 
         triggers{
           cron('@hourly')
@@ -26,54 +28,57 @@ pipeline {
             disableConcurrentBuilds()
         }
 
-      stages {
+          stages {
 
-            stage ('Checkout'){
+                stage ("checkout"){
+                  agent {
+                    label "linux"
+                  }
 
                   steps {
                          checkout scm
                          echo 'checking out'
                          sleep 10
+                      }
+                   }
+                stage('\u2776 APP BUILD') {
+                      steps {
+                          echo 'Building..'
+                          /**
+                            * build TestJob
+                          */
+                          echo 'setting env for building'
+                          sh 'export GOPATH=/home/cubanguy/GOProjects'
+                          echo "setting env for building set to path $GOPATH"
+                          sh "cd $GOPATH/src"
+                          sh "go install github.com/havanero/WebGo/"
+                          sleep 20
+                      }
                   }
-               }
-            stage('\u2776 APP BUILD') {
-                  steps {
-                      echo 'Building..'
-                      /**
-                        * build TestJob
-                      */
-                      echo 'setting env for building'
-                      sh 'export GOPATH=/home/cubanguy/GOProjects'
-                      echo "setting env for building set to path $GOPATH"
-                      sh "cd $GOPATH/src"
-                      sh "go install github.com/havanero/WebGo/"
-                      sleep 20
+                stage('\u2777 HMI API QA') {
+                      steps {
+                          echo 'Testing..'
+                          build 'TestJob1'
+                          sleep 10
+                      }
                   }
-              }
-            stage('\u2777 HMI API QA') {
-                  steps {
-                      echo 'Testing..'
-                      build 'TestJob1'
-                      sleep 10
-                  }
+                stage('\u2778 HMI UI QA') {
+                      steps {
+                          echo 'Testing..'
+                          build 'TestJob1'
+                          sleep 10
+                      }
+                }
+
+                stage('\u2779 S3 Deploy') {
+                      steps {
+                          echo 'Deploying....'
+                           build 'TestJob2'
+                          sleep 20
+                      }
               }
 
-            stage('\u2778 HMI UI QA') {
-                  steps {
-                      echo 'Testing..'
-                      build 'TestJob1'
-                      sleep 10
-                  }
-            }
-
-            stage('\u2779 S3 Deploy') {
-                  steps {
-                      echo 'Deploying....'
-                       build 'TestJob2'
-                      sleep 20
-                  }
-          }
-        }
+      }
 
       post
       {
