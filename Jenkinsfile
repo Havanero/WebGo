@@ -34,7 +34,11 @@ pipeline {
                   /**
                     * build TestJob
                   */
-                  
+                  echo 'setting env for building'
+                  sh 'export GOPATH=/home/cubanguy/GOProjects'
+                  echo "setting env for building set to path $GOPATH"
+                  sh "cd $GOPATH/src"
+                  sh "go install github.com/havanero/WebGo/"
                   sleep 20
               }
           }
