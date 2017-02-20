@@ -26,7 +26,7 @@ if (!env.CHANGE_ID) {
 
 properties(projectProperties)
 
-node {
+node('linux') {
 
    echo "testing "
    stage '\u2776 SCM checkout'
