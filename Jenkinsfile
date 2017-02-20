@@ -8,11 +8,9 @@
  */
 import groovy.json.JsonOutput
 
-pipeline {
+node {
 
     agent any
-    def shortCommit = "hello Caleb"
-    echo '${shortCommit}'
 
     triggers{
       cron('@hourly')
@@ -25,11 +23,13 @@ pipeline {
   stages {
 
         stage ('Checkout'){
-              
+
               steps {
                      checkout scm
                      sh 'git rev-parse HEAD > GIT_COMMIT'
-                    
+                    def shortCommit = readFile('GIT_COMMIT').take(6)
+                     echo '${shortCommit}'
+
                      echo 'checking out'
                      sleep 10
               }
