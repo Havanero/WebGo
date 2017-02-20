@@ -23,11 +23,11 @@ pipeline {
   stages {
 
         stage ('Checkout'){
-               checkout scm
-               sh 'git rev-parse HEAD > GIT_COMMIT'
-               def shortCommit = readFile('GIT_COMMIT').take(6)
-               echo '${shortCommit}'
+              
               steps {
+                     checkout scm
+                     sh 'git rev-parse HEAD > GIT_COMMIT'
+                     
                      echo "\u001B[32m Testing"
                      echo 'checking out'
                      sleep 10
