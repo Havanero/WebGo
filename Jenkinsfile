@@ -25,15 +25,12 @@ if (!env.CHANGE_ID) {
 }
 
 properties(projectProperties)
-def hi = hudson.model.Hudson.instance
-   hi.getItems(hudson.model.Project).each {project ->
-   println(project.displayName)
-}
 
 try{
 
-    node('linux') {
+    node {
 
+       checkout scm
        echo "testing "
        stage '\u2776 SCM checkout'
        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
@@ -50,7 +47,7 @@ catch (err){
 }
 
 try{
-    node {
+    node('windows') {
 
        echo "runing without label testing "
        stage '\u2776 SCM checkout'
