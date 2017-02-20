@@ -25,6 +25,10 @@ if (!env.CHANGE_ID) {
 }
 
 properties(projectProperties)
+def hi = hudson.model.Hudson.instance
+   hi.getItems(hudson.model.Project).each {project ->
+   println(project.displayName)
+}
 
 try{
 
