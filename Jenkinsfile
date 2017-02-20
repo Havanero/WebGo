@@ -34,7 +34,7 @@ node {
    extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
    sh 'git rev-parse HEAD > GIT_COMMIT'
    def shortCommit = readFile('GIT_COMMIT').take(6)
-   echo ' outputting commits ${shortCommit}'
+   echo "outputting commits ${shortCommit}"
 
 
 }
