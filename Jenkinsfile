@@ -47,7 +47,7 @@ catch (err){
 }
 
 try{
-    node('windows') {
+    if (node('windows')) {
 
        echo "runing without label testing "
        stage '\u2776 SCM checkout'
