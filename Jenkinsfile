@@ -21,7 +21,7 @@ pipeline {
         }
 
         triggers{
-          cron('@hourly')
+          cron('@daily')
         }
         options {
             buildDiscarder(logRotator(numToKeepStr:'1'))
@@ -76,24 +76,40 @@ pipeline {
                            build 'TestJob2'
                           sleep 20
                       }
+
+                      // Runs at the end of the stage, depending on whether the conditions are met.
+                post {
+                    // always means, well, always run.
+                    always {
+                      echo "Hi there"
+                    }
+                    // changed means when the build status is different than the previous build's status.
+                    changed {
+                      echo "I'm different"
+                    }
+                    // success, failure, unstable all run if the current build status is successful, failed, or unstable, respectively
+                    success {
+                      echo "I succeeded"
+                      archive "**/*"
+                    }
+                  }
               }
-
       }
-
-      post
-      {
-      success {
-              echo "success finished"
-          }
-
-        failure {
-             echo "failed to post"
-          }
-
-            unstable {
-              echo "unstable build"
-            }
-      }
+      //
+      // post
+      // {
+      // success {
+      //         echo "success finished"
+      //     }
+      //
+      //   failure {
+      //        echo "failed to post"
+      //     }
+      //
+      //       unstable {
+      //         echo "unstable build"
+      //       }
+      // }
 }
 
 def notifySlack(text, channel) {
