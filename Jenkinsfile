@@ -63,7 +63,7 @@ catch (err){
 }
 
 try{
-    node(!'windows') {
+    node(!'master') {
 
        echo "runing without label testing "
        stage '\u2776 SCM checkout'
@@ -77,7 +77,7 @@ try{
     }
   }
   catch (err){
-    echo "fail to just run node"
+    echo "No windows Node Available"
   }
 
 
