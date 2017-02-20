@@ -90,7 +90,7 @@ pipeline {
                     // success, failure, unstable all run if the current build status is successful, failed, or unstable, respectively
                     success {
                       echo "I succeeded"
-                      archive "**/*"
+                      //archive "**/*"
                     }
                   }
               }
