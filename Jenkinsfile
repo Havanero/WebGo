@@ -29,6 +29,10 @@ properties(projectProperties)
 node {
 
   echo "testing "
+   stages {
+     stage('SCM Checkout')
+     scm checkout
+   }
 
 }
 
