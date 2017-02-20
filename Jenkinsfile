@@ -30,8 +30,8 @@ pipeline {
 
           stages {
 
-                
-                 stage ("\u001B[31mI'm Red\u001B[0m Now not"){
+
+                 stage ('\u001B[31mIm Red\u001B[0m Now not'){
                   // agent {
                   //   label "linux"
                   // }
@@ -59,6 +59,10 @@ pipeline {
                 stage('\u2777 HMI API QA') {
                     when {
                       branch "master"
+                      expression {
+
+                        echo "print ok is master is found"
+                       }
                     }
                       steps {
                           echo 'Testing..'
