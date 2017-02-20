@@ -27,8 +27,8 @@ pipeline {
               steps {
                      checkout scm
                      sh 'git rev-parse HEAD > GIT_COMMIT'
-                     
-                     echo "\u001B[32m Testing"
+                     def shortCommit = "hello Caleb"
+                     echo '${shortCommit}'
                      echo 'checking out'
                      sleep 10
               }
