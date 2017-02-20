@@ -30,15 +30,22 @@ try{
 
     node
     {
-       checkout scm
-       echo "testing "
+
        stage ('\u2776 SCM checkout'){
+          checkout scm
+          echo "testing "
           //  checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
           //  extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
            sh 'git rev-parse HEAD > GIT_COMMIT'
            def shortCommit = readFile('GIT_COMMIT').take(6)
            echo "outputting commits ${shortCommit}"
          }
+
+         stage ('\u2777 OBIS-Service BUILD'){
+            sh "ls -lrt"
+            echo "testing "
+          }
+
 
     }
   }
@@ -47,7 +54,7 @@ catch (err){
 }
 
 try{
-    node('windows') {
+    node(!'windows') {
 
        echo "runing without label testing "
        stage '\u2776 SCM checkout'
