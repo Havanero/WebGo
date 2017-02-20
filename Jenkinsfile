@@ -30,12 +30,7 @@ try{
 
     node {
 
-      def config = getConfig()
-      for (node in config){
-          def nodeName = node.get('node')
-          echo "node: ${nodeName}"
-
-      }
+      
        checkout scm
        echo "testing "
        stage '\u2776 SCM checkout'
@@ -53,7 +48,7 @@ catch (err){
 }
 
 try{
-    if (node('windows')) {
+    node(!'windows') {
 
        echo "runing without label testing "
        stage '\u2776 SCM checkout'
