@@ -56,6 +56,9 @@ pipeline {
                       }
                   }
                 stage('\u2777 HMI API QA') {
+                    when {
+                      branch "master"
+                    }
                       steps {
                           echo 'Testing..'
                           build 'TestJob1'
