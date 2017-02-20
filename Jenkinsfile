@@ -56,6 +56,11 @@ try{
               sh "ls -lrt"
               echo "testing "
             }
+
+          currentBuild{
+
+
+          }
             post{
 
                     success {
