@@ -31,9 +31,9 @@ pipeline {
           stages {
 
                 stage ("checkout"){
-                  agent {
-                    label "linux"
-                  }
+                  // agent {
+                  //   label "linux"
+                  // }
 
                   steps {
                          checkout scm
