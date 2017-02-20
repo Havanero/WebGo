@@ -30,7 +30,9 @@ node {
 
   echo "testing "
    stage '\u2776 SCM checkout'
-   scm checkout
+   checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
+   extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
+
 
 
 }
