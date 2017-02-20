@@ -26,31 +26,42 @@ if (!env.CHANGE_ID) {
 
 properties(projectProperties)
 
-node('linux') {
+try{
 
-   echo "testing "
-   stage '\u2776 SCM checkout'
-   checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
-   extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
-   sh 'git rev-parse HEAD > GIT_COMMIT'
-   def shortCommit = readFile('GIT_COMMIT').take(6)
-   echo "outputting commits ${shortCommit}"
+    node('linux') {
+
+       echo "testing "
+       stage '\u2776 SCM checkout'
+       checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
+       extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
+       sh 'git rev-parse HEAD > GIT_COMMIT'
+       def shortCommit = readFile('GIT_COMMIT').take(6)
+       echo "outputting commits ${shortCommit}"
 
 
+    }
+  }
+catch (err){
+   echo "failed to run node linux"
 }
 
-node {
+try{
+    node {
 
-   echo "runing without label testing "
-   stage '\u2776 SCM checkout'
-   checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
-   extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
-   sh 'git rev-parse HEAD > GIT_COMMIT'
-   def shortCommit = readFile('GIT_COMMIT').take(6)
-   echo "outputting commits ${shortCommit}"
+       echo "runing without label testing "
+       stage '\u2776 SCM checkout'
+       checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
+       extensions: [[$class: 'CleanBeforeCheckout']], submoduleCfg: [], url: 'git@github.com:Havanero/WebGo.git'])
+       sh 'git rev-parse HEAD > GIT_COMMIT'
+       def shortCommit = readFile('GIT_COMMIT').take(6)
+       echo "outputting commits ${shortCommit}"
 
 
-}
+    }
+  }
+  catch (err){
+    echo "fail to just run node"
+  }
 
 
 // pipeline {
