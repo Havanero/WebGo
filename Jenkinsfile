@@ -10,7 +10,7 @@ import groovy.json.JsonOutput
 
 node {
 
-        agent any
+        //agent any
 
         triggers{
           cron('@hourly')
@@ -27,7 +27,7 @@ node {
                   steps {
                          checkout scm
                          sh 'git rev-parse HEAD > GIT_COMMIT'
-                        def shortCommit = readFile('GIT_COMMIT').take(6)
+                         def shortCommit = readFile('GIT_COMMIT').take(6)
                          echo '${shortCommit}'
 
                          echo 'checking out'
