@@ -25,6 +25,7 @@ pipeline {
         stage ('Checkout'){
               steps {
                      echo "\u001B[32m Testing"
+                     echo “\u001B[32m testing”
                       echo 'checking out'
                       sleep 10
               }
