@@ -31,13 +31,13 @@ pipeline {
           stages {
 
 
-                 stage ('\u001B[31mIm Red\u001B[0m Now not'){
+                 stage ('Checkout'){
                   // agent {
                   //   label "linux"
                   // }
 
                   steps {
-                         checkout scm
+                        //  checkout scm
                          echo 'checking out'
                          sleep 10
                       }
@@ -58,7 +58,7 @@ pipeline {
                   }
                 stage('\u2777 HMI API QA') {
                     when {
-                      
+
                       expression {
                         echo "print ok is master is found"
                         return true
