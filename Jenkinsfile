@@ -17,7 +17,7 @@ import java.net.URL
 pipeline {
 
         agent {
-          label "windows"
+          label any
         }
 
         triggers{
