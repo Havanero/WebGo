@@ -27,8 +27,6 @@ pipeline {
             buildDiscarder(logRotator(numToKeepStr:'1'))
             disableConcurrentBuilds()
             skipDefaultCheckout()
-             // "wrapper" steps that should wrap the entire build execution
-            
             timeout(time: 5, unit: 'MINUTES')
         }
 
@@ -46,7 +44,7 @@ pipeline {
                          sleep 10
                       }
                    }
-                stage('\u2776 APP BUILD') {
+                stage('\u2775 APP BUILD') {
                       steps {
                           echo 'Building..'
                           /**
@@ -81,6 +79,10 @@ pipeline {
                           sleep 10
                       }
                 }
+
+                 stage('\u2780 S3 - N_ND-OBIS_linux_distribution') {
+
+                 }
 
                 stage('\u2779 S3 Deploy') {
                       steps {
