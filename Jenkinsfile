@@ -27,9 +27,9 @@ pipeline {
             buildDiscarder(logRotator(numToKeepStr:'1'))
             disableConcurrentBuilds()
             skipDefaultCheckout()
-           // "wrapper" steps that should wrap the entire build execution
-           timestamps()
-           timeout(time: 5, unit: 'MINUTES')
+             // "wrapper" steps that should wrap the entire build execution
+            
+            timeout(time: 5, unit: 'MINUTES')
         }
 
           stages {
